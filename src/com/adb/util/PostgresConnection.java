@@ -1,4 +1,4 @@
-package util;
+package com.adb.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,7 +23,6 @@ public class PostgresConnection {
         connection = null;
         try {
             connection = DriverManager.getConnection(url, username, password);
-            System.out.println("Connected to the PostgreSQL server successfully.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

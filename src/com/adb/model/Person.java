@@ -1,4 +1,4 @@
-package model;
+package com.adb.model;
 
 public class Person {
     private String name;
