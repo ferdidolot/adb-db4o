@@ -1,0 +1,2 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit","Param: table"
+"com.adb.benchmarking.JdbcBenchmark.runPostgreQueries","thrpt",1,3,2.730017,1.434542,"ops/ms",Person
