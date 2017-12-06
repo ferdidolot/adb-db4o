@@ -2,19 +2,13 @@ package com.adb.model;
 
 public class Person {
     private String name;
-    private int age;
 
-    public Person(String name, int age){
-        this.age = age;
+    public Person(){
+        this.name = "";
+    }
+
+    public Person(String name){
         this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public String getName() {
@@ -25,7 +19,4 @@ public class Person {
         this.name = name;
     }
 
-    public String toString(){
-        return this.name +" " + this.age;
-    }
 }

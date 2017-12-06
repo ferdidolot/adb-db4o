@@ -17,8 +17,8 @@ import java.sql.Statement;
 public class Main {
     public static void main(String args[]) throws Exception{
         Options options = new OptionsBuilder()
-                .warmupIterations(10)
-                .measurementIterations(10)
+                .warmupIterations(5)
+                .measurementIterations(5)
                 .include(Main.class.getSimpleName()).forks(1).build();
 
         new Runner(options).run();
