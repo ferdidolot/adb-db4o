@@ -5,18 +5,19 @@ import java.util.List;
 public class Course {
     private int courseId;
     private String title;
-    private int profId;
+    private Professor professor;
     private List<Student> students;
 
     public Course(){
-        this.title = "";
-        this.profId = 0;
     }
 
-    public Course(int courseId, String title, int profId){
+    public Course(int courseId, String title, Professor professor, List<Student> students){
         this.title = title;
-        this.profId = profId;
         this.courseId = courseId;
+        this.professor = professor;
+        for(Student student: students){
+            student.addCourse(this);
+        }
     }
 
     public String getTitle() {
@@ -27,12 +28,12 @@ public class Course {
         this.title = title;
     }
 
-    public int getProfId() {
-        return profId;
+    public Professor getProfessor() {
+        return professor;
     }
 
-    public void setProfId(int profId) {
-        this.profId = profId;
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
     }
 
     public int getCourseId() {
@@ -49,5 +50,10 @@ public class Course {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public void addStudent(Student student){
+        students.add(student);
+        student.addCourse(this);
     }
 }

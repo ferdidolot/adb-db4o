@@ -10,10 +10,12 @@ public class Professor extends Person {
         super();
     }
 
-    public Professor(String name, int profId){
+    public Professor(String name, int profId, List<Course> courses){
         super(name);
         this.profId = profId;
-
+        for(Course course: courses){
+            course.setProfessor(this);
+        }
     }
 
     public int getProfId() {
@@ -30,5 +32,10 @@ public class Professor extends Person {
 
     public void setCourses(List<Course> courses) {
         this.courses = courses;
+    }
+
+    public void addCourses(Course course){
+        courses.add(course);
+        course.setProfessor(this);
     }
 }
