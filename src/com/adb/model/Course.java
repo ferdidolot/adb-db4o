@@ -53,7 +53,7 @@ public class Course {
     }
 
     public void addStudent(Student student){
-        students.add(student);
+        if(!students.contains(student)) students.add(student);
         student.addCourse(this);
     }
 }

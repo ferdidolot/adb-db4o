@@ -1,5 +1,6 @@
 package com.adb.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Professor extends Person {
@@ -7,10 +8,12 @@ public class Professor extends Person {
 
     public Professor(){
         super();
+        this.courses = new ArrayList<Course>();
     }
 
     public Professor(String name, int id, List<Course> courses){
         super(id, name);
+        this.courses = courses;
         for(Course course: courses){
             course.setProfessor(this);
         }
@@ -25,7 +28,7 @@ public class Professor extends Person {
     }
 
     public void addCourses(Course course){
-        courses.add(course);
+        if(!courses.contains(course)) courses.add(course);
         course.setProfessor(this);
     }
 }
