@@ -1,9 +1,14 @@
 package com.adb;
 import com.adb.model.Person;
+import com.adb.util.PostgresConnection;
 import com.adb.util.Timer;
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 
 public class Main {
@@ -34,15 +39,23 @@ public class Main {
 //                        .build();
 //
 //        new Runner(jdbcBenchmarkOptions).run();
+        String dbfilename = "db/dbfile";
         Timer.start();
-        countPersonDb4o("db/dbfile");
+        countPersonDb4o(dbfilename);
         Timer.stop();
         System.out.println("Counting object of DB4O takes "+Timer.runTime() + " s");
 
+        dbfilename = "db/Person1000";
         Timer.start();
-        countPersonDb4o("db/Person1000");
+        countPersonDb4o(dbfilename);
         Timer.stop();
         System.out.println("Counting object of DB4O takes "+Timer.runTime() + " s");
+
+        String tablename = "Person";
+        Timer.start();
+        countJdbc("Person");
+        Timer.stop();
+        System.out.println("Counting person of postgresql takes " + Timer.runTime() + " s");
 
     }
 
@@ -51,6 +64,13 @@ public class Main {
         ObjectSet<Person> objectSet = db.query(Person.class);
         System.out.println("Object size: "+objectSet.size());
         db.close();
+    }
+
+    private static void countJdbc(String table) throws Exception{
+        Connection connection = PostgresConnection.getConnection();
+        Statement statement= connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM \""+table+"\"");
+        System.out.println("Record size: " + resultSet.getRow());
     }
 //
 //    public static void deletePersonDb4o(){

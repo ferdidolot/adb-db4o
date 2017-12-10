@@ -1,13 +1,15 @@
 package com.adb.model;
 
 public class Person {
+    private int id;
     private String name;
 
     public Person(){
+        this.id = 0;
         this.name = "";
     }
 
-    public Person(String name){
+    public Person(int id, String name){
         this.name = name;
     }
 
@@ -19,4 +21,11 @@ public class Person {
         this.name = name;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
