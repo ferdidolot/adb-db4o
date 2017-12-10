@@ -2,28 +2,34 @@ package com.adb;
 import com.adb.model.Person;
 import com.adb.util.Db4oConnection;
 import com.adb.util.PostgresConnection;
-import com.adb.util.Timer;
-import com.db4o.Db4o;
+import com.adb.util.InputUtil;
+import com.adb.util.TimeUtil;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
-import com.db4o.defragment.Defragment;
-import com.db4o.defragment.DefragmentConfig;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.List;
 
 
 public class Main {
     private static Db4oConnection db4oConnection;
     public static void main(String args[]) throws Exception{
-        db4oConnection = new Db4oConnection();
-        db4oConnection.connect();
-        db4oConnection.close();
+//        db4oConnection = new Db4oConnection();
+//        db4oConnection.connect();
+//        db4oConnection.close();
 //        insertDummyPerson("db/dbfile", 1000);
 //        deletePersonDb4o();
 //        countPersonDb4o();
-        db4oConnection.defrag();
+//        db4oConnection.defrag();
+        InputUtil inputUtil = new InputUtil();
+        List<List<String>> students = inputUtil.getCollectionString("student.in");
+        for(int i = 0 ; i < students.size() ; i++){
+            for(int j = 0 ; j < students.get(i).size() ; j++){
+                System.out.println(students.get(i).get(j));
+            }
+        }
     }
 
     public static void insertDummyPerson(String dbfilename, int N){
@@ -35,7 +41,7 @@ public class Main {
         db4oConnection.close();
     }
 
-    public static void countPersonDb4o(){
+    private static void countPersonDb4o(){
         ObjectContainer db = db4oConnection.getObjectContainer();
         ObjectSet<Person> objectSet = db.query(Person.class);
         System.out.println("Object size: "+objectSet.size());
@@ -50,7 +56,7 @@ public class Main {
         System.out.println("Record size: " + resultSet.getRow());
     }
 
-    public static void deletePersonDb4o(){
+    private  static void deletePersonDb4o(){
         ObjectContainer db = db4oConnection.getObjectContainer();
         ObjectSet<Person> objectSet = db.query(Person.class);
         for (Person person: objectSet) {
@@ -61,23 +67,21 @@ public class Main {
     }
 
     public static void testTimer() throws Exception{
-        String dbfilename = "db/dbfile";
-        Timer.start();
+        TimeUtil.start();
         countPersonDb4o();
-        Timer.stop();
-        System.out.println("Counting object of DB4O takes "+Timer.runTime() + " s");
+        TimeUtil.stop();
+        System.out.println("Counting object of DB4O takes "+ TimeUtil.runTime() + " s");
 
-        dbfilename = "db/Person1000";
-        Timer.start();
+        TimeUtil.start();
         countPersonDb4o();
-        Timer.stop();
-        System.out.println("Counting object of DB4O takes "+Timer.runTime() + " s");
+        TimeUtil.stop();
+        System.out.println("Counting object of DB4O takes "+ TimeUtil.runTime() + " s");
 
         String tablename = "Person";
-        Timer.start();
-        countJdbc("Person");
-        Timer.stop();
-        System.out.println("Counting person of postgresql takes " + Timer.runTime() + " s");
+        TimeUtil.start();
+        countJdbc(tablename);
+        TimeUtil.stop();
+        System.out.println("Counting person of postgresql takes " + TimeUtil.runTime() + " s");
     }
 }
 
