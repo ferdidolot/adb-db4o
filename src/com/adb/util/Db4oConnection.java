@@ -2,29 +2,41 @@ package com.adb.util;
 
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
+import com.db4o.defragment.Defragment;
+import com.db4o.defragment.DefragmentConfig;
 
 
 public class Db4oConnection {
-    public static String dbfile = "db/dbfile";
-    private static ObjectContainer objectContainer;
-    private static Db4oConnection db4oConnection = new Db4oConnection();
+    private static final String DBFILE= "db/dbfile";
+    private ObjectContainer objectContainer;
 
-    private Db4oConnection(){
-        connect();
+    public Db4oConnection(){
+        objectContainer = null;
     }
 
-    public static ObjectContainer getObjectContainer(){
+    public ObjectContainer getObjectContainer(){
         return objectContainer;
     }
 
+    public void commit(){
+        objectContainer.commit();
+    }
+
+    public void close(){
+        objectContainer.close();
+    }
+
     public void connect(){
-        objectContainer = null;
         try{
-            objectContainer = Db4o.openFile(dbfile);
+            objectContainer = Db4o.openFile(DBFILE);
         }
         catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public  void defrag() throws Exception{
+        Defragment.defrag(new DefragmentConfig(DBFILE));
     }
 }
 

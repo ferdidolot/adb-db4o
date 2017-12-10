@@ -25,7 +25,7 @@ public class Db4oBenchmark {
     }
 
     private static ObjectSet runTest(String dbfilename) throws Exception {
-        ObjectContainer db = Db4oConnection.getObjectContainer();
+        ObjectContainer db = new Db4oConnection().getObjectContainer();
         ObjectSet objectSet = db.query(Person.class);
 //        db.close();
         return objectSet;
