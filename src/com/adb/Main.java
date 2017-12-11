@@ -1,5 +1,11 @@
 package com.adb;
+import com.adb.factory.CourseFactory;
+import com.adb.factory.ProfessorFactory;
+import com.adb.factory.StudentFactory;
+import com.adb.model.Course;
 import com.adb.model.Person;
+import com.adb.model.Professor;
+import com.adb.model.Student;
 import com.adb.util.Db4oConnection;
 import com.adb.util.PostgresConnection;
 import com.adb.util.InputUtil;
@@ -11,25 +17,41 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 
 public class Main {
     private static Db4oConnection db4oConnection;
     public static void main(String args[]) throws Exception{
-//        db4oConnection = new Db4oConnection();
-//        db4oConnection.connect();
+        db4oConnection = new Db4oConnection();
+        db4oConnection.connect();
 //        db4oConnection.close();
 //        insertDummyPerson("db/dbfile", 1000);
 //        deletePersonDb4o();
 //        countPersonDb4o();
 //        db4oConnection.defrag();
-        InputUtil inputUtil = new InputUtil();
-        List<List<String>> students = inputUtil.getCollectionString("student.in");
-        for(int i = 0 ; i < students.size() ; i++){
-            for(int j = 0 ; j < students.get(i).size() ; j++){
-                System.out.println(students.get(i).get(j));
-            }
+//        InputUtil inputUtil = new InputUtil();
+//        List<List<String>> students = inputUtil.getCollectionString("student.in");
+//        List<List<String>> professors = inputUtil.getCollectionString("professor.in");
+//        List<List<String>> courses = inputUtil.getCollectionString("course.in");
+//        List<List<String>> courseTaken = inputUtil.getCollectionString("coursetaken.in");
+//        Map<Integer, Student> studentMap = StudentFactory.produce(students);
+//        Map<Integer, Professor> professorMap = ProfessorFactory.produce(professors);
+//        List<Course> courseList = CourseFactory.produce(courses, courseTaken, professorMap,studentMap);
+        ObjectContainer db = db4oConnection.getObjectContainer();
+        ObjectSet<Course> objectSet = db.query(Course.class);
+        while(objectSet.hasNext()){
+            System.out.println(objectSet.next());
         }
+//        for(Course course: courseList){
+//            db.store(course);
+//        }
+        db.commit();
+        db.close();
+//        List<Student> list = StudentFactory.produce(students);
+//        for(int i = 0 ; i < list.size() ; i++){
+//            System.out.println(list.get(i));
+//        }
     }
 
     public static void insertDummyPerson(String dbfilename, int N){

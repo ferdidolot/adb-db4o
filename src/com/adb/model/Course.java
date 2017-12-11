@@ -15,6 +15,7 @@ public class Course {
         this.title = title;
         this.courseId = courseId;
         this.professor = professor;
+        this.students = students;
         for(Student student: students){
             student.addCourse(this);
         }
@@ -54,6 +55,10 @@ public class Course {
 
     public void addStudent(Student student){
         if(!students.contains(student)) students.add(student);
-        student.addCourse(this);
+        if(!student.getCourses().contains(this))student.addCourse(this);
+    }
+
+    public String toString(){
+        return courseId +" " + title + " "  + professor +" " + students.toString();
     }
 }

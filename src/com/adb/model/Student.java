@@ -8,7 +8,7 @@ public class Student extends Person{
 
     public Student(){
         super();
-        courses = new ArrayList<Course>();
+        courses = new ArrayList<>();
     }
 
     public Student(int id, String name, List<Course> courses){
@@ -29,6 +29,10 @@ public class Student extends Person{
 
     public void addCourse(Course course){
         if(!courses.contains(course)) courses.add(course);
-        course.addStudent(this);
+        if(!course.getStudents().contains(this)) course.addStudent(this);
+    }
+
+    public String toString(){
+        return getId()+","+getName();
     }
 }

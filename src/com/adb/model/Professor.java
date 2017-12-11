@@ -8,10 +8,10 @@ public class Professor extends Person {
 
     public Professor(){
         super();
-        this.courses = new ArrayList<Course>();
+        this.courses = new ArrayList<>();
     }
 
-    public Professor(String name, int id, List<Course> courses){
+    public Professor(int id, String name, List<Course> courses){
         super(id, name);
         this.courses = courses;
         for(Course course: courses){
@@ -30,5 +30,9 @@ public class Professor extends Person {
     public void addCourses(Course course){
         if(!courses.contains(course)) courses.add(course);
         course.setProfessor(this);
+    }
+
+    public String toString(){
+        return getId()+" " + getName() ;
     }
 }
