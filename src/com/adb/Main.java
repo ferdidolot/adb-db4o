@@ -25,7 +25,7 @@ public class Main {
 //        deletePersonDb4o();
 //        countPersonDb4o();
 //        db4oConnection.defrag();
-//        InputUtil inputUtil = new InputUtil();
+        InputUtil inputUtil = new InputUtil();
 //        List<List<String>> students = inputUtil.getCollectionString("student.in");
 //        List<List<String>> professors = inputUtil.getCollectionString("professor.in");
 //        List<List<String>> courses = inputUtil.getCollectionString("course.in");
@@ -35,6 +35,7 @@ public class Main {
 //        List<Course> courseList = CourseFactory.produce(courses, courseTaken, professorMap,studentMap);
         ObjectSet<Course> objectSet = db4oConnection.getObjectContainer().query(Course.class);
         while(objectSet.hasNext()){
+//            db4oConnection.getObjectContainer().delete(objectSet.next());
             System.out.println(objectSet.next());
         }
         List<MetaDTO> metaDTOS = new ArrayList<MetaDTO>();
@@ -45,7 +46,7 @@ public class Main {
         String res = PostgreQueriesBuilder.select("Student", name, metaDTOS);
         System.out.println(res);
 //        for(Course course: courseList){
-//            db.store(course);
+//            db4oConnection.getObjectContainer().store(course);
 //        }
         db4oConnection.commit();
         db4oConnection.close();

@@ -5,18 +5,20 @@ import java.util.List;
 
 public class Professor extends Person {
     private List<Course> courses;
+    private int monthlySalary;
 
     public Professor(){
         super();
         this.courses = new ArrayList<>();
     }
 
-    public Professor(int id, String name, List<Course> courses){
+    public Professor(int id, String name, List<Course> courses, int monthlySalary){
         super(id, name);
         this.courses = courses;
         for(Course course: courses){
             course.setProfessor(this);
         }
+        this.monthlySalary = monthlySalary;
     }
 
     public List<Course> getCourses() {
@@ -32,7 +34,15 @@ public class Professor extends Person {
         course.setProfessor(this);
     }
 
+    public int getMonthlySalary() {
+        return monthlySalary;
+    }
+
+    public void setMonthlySalary(int monthlySalary) {
+        this.monthlySalary = monthlySalary;
+    }
+
     public String toString(){
-        return getId()+" " + getName() ;
+        return getId()+ "," + getName()+","+getMonthlySalary() ;
     }
 }

@@ -5,18 +5,20 @@ import java.util.List;
 
 public class Student extends Person{
     private List<Course> courses;
+    private int yearlyTuitionFee;
 
     public Student(){
         super();
         courses = new ArrayList<>();
     }
 
-    public Student(int id, String name, List<Course> courses){
+    public Student(int id, String name, List<Course> courses, int yearlyTuitionFee){
         super(id, name);
         this.courses = courses;
         for(Course course: courses){
             course.addStudent(this);
         }
+        this.yearlyTuitionFee = yearlyTuitionFee;
     }
 
     public List<Course> getCourses() {
@@ -32,7 +34,15 @@ public class Student extends Person{
         if(!course.getStudents().contains(this)) course.addStudent(this);
     }
 
+    public int getYearlyTuitionFee() {
+        return yearlyTuitionFee;
+    }
+
+    public void setYearlyTuitionFee(int yearlyTuitionFee) {
+        this.yearlyTuitionFee = yearlyTuitionFee;
+    }
+
     public String toString(){
-        return getId()+","+getName();
+        return getId()+","+getName()+" "+getYearlyTuitionFee();
     }
 }

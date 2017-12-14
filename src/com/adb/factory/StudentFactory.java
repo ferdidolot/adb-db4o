@@ -12,7 +12,8 @@ public class StudentFactory {
     public static Map<Integer, Student> produce(List<List<String>> list){
         Map<Integer, Student> dict = new HashMap<>();
         for(List<String> outer: list){
-            dict.put(Integer.parseInt(outer.get(0)), new Student(Integer.parseInt(outer.get(0)), outer.get(1), new ArrayList<>()));
+            dict.put(Integer.parseInt(outer.get(0)),
+                    new Student(Integer.parseInt(outer.get(0)), outer.get(1), new ArrayList<>(), Integer.parseInt(outer.get(2)) ));
         }
         return dict;
     }
