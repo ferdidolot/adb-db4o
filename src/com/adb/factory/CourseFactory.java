@@ -17,7 +17,7 @@ public class CourseFactory {
         for(List<String> outer: studentcourse){
             int studentId = Integer.parseInt(outer.get(0));
             int courseId = Integer.parseInt(outer.get(1));
-            System.out.println(studentId + " " + courseId);
+//            System.out.println(studentId + " " + courseId);
             List<Student> now = coursesMap.get(courseId);
             if(now == null) {
                 now = new ArrayList<>();
@@ -32,7 +32,7 @@ public class CourseFactory {
 
         for(List<String> outer: studentcourse){
             int courseId = Integer.parseInt(outer.get(1));
-            System.out.println("now: "+ courseId+" " +coursesMap.get(courseId));
+//            System.out.println("now: "+ courseId+" " +coursesMap.get(courseId));
         }
 
         for(List<String> outer: list){

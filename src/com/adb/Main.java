@@ -20,24 +20,71 @@ public class Main {
     public static void main(String args[]) throws Exception{
         db4oConnection = new Db4oConnection();
         db4oConnection.connect();
-//        db4oConnection.close();
-//        insertDummyPerson("db/dbfile", 1000);
-//        deletePersonDb4o();
-//        countPersonDb4o();
-//        db4oConnection.defrag();
-        InputUtil inputUtil = new InputUtil();
-//        List<List<String>> students = inputUtil.getCollectionString("student.in");
-//        List<List<String>> professors = inputUtil.getCollectionString("professor.in");
-//        List<List<String>> courses = inputUtil.getCollectionString("course.in");
-//        List<List<String>> courseTaken = inputUtil.getCollectionString("coursetaken.in");
-//        Map<Integer, Student> studentMap = StudentFactory.produce(students);
-//        Map<Integer, Professor> professorMap = ProfessorFactory.produce(professors);
-//        List<Course> courseList = CourseFactory.produce(courses, courseTaken, professorMap,studentMap);
         ObjectSet<Course> objectSet = db4oConnection.getObjectContainer().query(Course.class);
         while(objectSet.hasNext()){
 //            db4oConnection.getObjectContainer().delete(objectSet.next());
             System.out.println(objectSet.next());
         }
+//        createDb4oSchema();
+
+        db4oConnection.commit();
+        db4oConnection.close();
+    }
+
+    public static void createDb4oSchema() throws Exception {
+        InputUtil inputUtil = new InputUtil();
+        System.out.println("Reading student input");
+        TimeUtil.start();
+        List<List<String>> students = inputUtil.getCollectionString("student1000.in");
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
+
+        System.out.println("Reading professor input");
+        TimeUtil.start();
+        List<List<String>> professors = inputUtil.getCollectionString("professor100.in");
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
+
+        System.out.println("Reading course input");
+        TimeUtil.start();
+        List<List<String>> courses = inputUtil.getCollectionString("course100.in");
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
+
+        System.out.println("Reading course taken input");
+        TimeUtil.start();
+        List<List<String>> courseTaken = inputUtil.getCollectionString("coursetaken_1000_100.in");
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
+
+        System.out.println("Creating student objects");
+        TimeUtil.start();
+        Map<Integer, Student> studentMap = StudentFactory.produce(students);
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
+
+        System.out.println("Creating professor objects");
+        TimeUtil.start();
+        Map<Integer, Professor> professorMap = ProfessorFactory.produce(professors);
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
+
+        System.out.println("Creating course objects");
+        TimeUtil.start();
+        List<Course> courseList = CourseFactory.produce(courses, courseTaken, professorMap,studentMap);
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
+
+        System.out.println("Inserting objects to db4o");
+        TimeUtil.start();
+        for(Course course: courseList){
+            db4oConnection.getObjectContainer().store(course);
+        }
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
+    }
+
+    public static void testQueryBuilder(){
         List<MetaDTO> metaDTOS = new ArrayList<MetaDTO>();
         List<String> name = new ArrayList<String>();
         name.add("name");
@@ -45,15 +92,6 @@ public class Main {
         metaDTOS.add(new MetaDTO("id", "1", "Integer"));
         String res = PostgreQueriesBuilder.select("Student", name, metaDTOS);
         System.out.println(res);
-//        for(Course course: courseList){
-//            db4oConnection.getObjectContainer().store(course);
-//        }
-        db4oConnection.commit();
-        db4oConnection.close();
-//        List<Student> list = StudentFactory.produce(students);
-//        for(int i = 0 ; i < list.size() ; i++){
-//            System.out.println(list.get(i));
-//        }
     }
 
     public static void insertDummyPerson(String dbfilename, int N){
