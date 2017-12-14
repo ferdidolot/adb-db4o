@@ -2,10 +2,11 @@
 
 -- DROP TABLE public."Professor";
 
-CREATE TABLE public."Professor"
+CREATE TABLE public.professor
 (
     profid integer NOT NULL,
     name character varying(50) COLLATE pg_catalog."default",
+    monthlysalary integer,
     CONSTRAINT "Professor_pkey" PRIMARY KEY (profid)
 )
 WITH (
@@ -13,7 +14,7 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public."Professor"
+ALTER TABLE public.professor
     OWNER to postgres;
 
 
@@ -23,18 +24,19 @@ ALTER TABLE public."Professor"
 
 -- DROP TABLE public."Student";
 
-CREATE TABLE public."Student"
+CREATE TABLE public.student
 (
-    id integer NOT NULL,
+    studentid integer NOT NULL,
     name character varying(50) COLLATE pg_catalog."default",
-    CONSTRAINT "Student_pkey" PRIMARY KEY (id)
+    yearlytuitionfee integer,
+    CONSTRAINT "Student_pkey" PRIMARY KEY (studentid)
 )
 WITH (
     OIDS = FALSE
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public."Student"
+ALTER TABLE public.student
     OWNER to postgres;
 
 
@@ -44,14 +46,14 @@ ALTER TABLE public."Student"
 
 -- DROP TABLE public."Course";
 
-CREATE TABLE public."Course"
+CREATE TABLE public.course
 (
     courseid integer NOT NULL,
     name character varying(50) COLLATE pg_catalog."default",
     profid integer,
     CONSTRAINT "Course_pkey" PRIMARY KEY (courseid),
     CONSTRAINT "Professor" FOREIGN KEY (profid)
-        REFERENCES public."Professor" (profid) MATCH SIMPLE
+        REFERENCES public.professor (profid) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -60,7 +62,7 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public."Course"
+ALTER TABLE public.course
     OWNER to postgres;
 
 
@@ -69,16 +71,16 @@ ALTER TABLE public."Course"
 
 -- DROP TABLE public."CourseTaken";
 
-CREATE TABLE public."CourseTaken"
+CREATE TABLE public.coursetaken
 (
     studentid integer,
     courseid integer,
     CONSTRAINT course FOREIGN KEY (courseid)
-        REFERENCES public."Course" (courseid) MATCH SIMPLE
+        REFERENCES public.course (courseid) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT student FOREIGN KEY (studentid)
-        REFERENCES public."Student" (id) MATCH SIMPLE
+        REFERENCES public.student (studentid) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -87,5 +89,5 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public."CourseTaken"
+ALTER TABLE public.coursetaken
     OWNER to postgres;
