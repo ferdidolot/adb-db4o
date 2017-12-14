@@ -2,20 +2,15 @@ package com.adb;
 import com.adb.factory.CourseFactory;
 import com.adb.factory.ProfessorFactory;
 import com.adb.factory.StudentFactory;
-import com.adb.model.Course;
-import com.adb.model.Person;
-import com.adb.model.Professor;
-import com.adb.model.Student;
-import com.adb.util.Db4oConnection;
-import com.adb.util.PostgresConnection;
-import com.adb.util.InputUtil;
-import com.adb.util.TimeUtil;
+import com.adb.model.*;
+import com.adb.util.*;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,16 +33,22 @@ public class Main {
 //        Map<Integer, Student> studentMap = StudentFactory.produce(students);
 //        Map<Integer, Professor> professorMap = ProfessorFactory.produce(professors);
 //        List<Course> courseList = CourseFactory.produce(courses, courseTaken, professorMap,studentMap);
-        ObjectContainer db = db4oConnection.getObjectContainer();
-        ObjectSet<Course> objectSet = db.query(Course.class);
+        ObjectSet<Course> objectSet = db4oConnection.getObjectContainer().query(Course.class);
         while(objectSet.hasNext()){
             System.out.println(objectSet.next());
         }
+        List<MetaDTO> metaDTOS = new ArrayList<MetaDTO>();
+        List<String> name = new ArrayList<String>();
+        name.add("name");
+        name.add("id");
+        metaDTOS.add(new MetaDTO("id", "1", "Integer"));
+        String res = PostgreQueriesBuilder.select("Student", name, metaDTOS);
+        System.out.println(res);
 //        for(Course course: courseList){
 //            db.store(course);
 //        }
-        db.commit();
-        db.close();
+        db4oConnection.commit();
+        db4oConnection.close();
 //        List<Student> list = StudentFactory.produce(students);
 //        for(int i = 0 ; i < list.size() ; i++){
 //            System.out.println(list.get(i));
