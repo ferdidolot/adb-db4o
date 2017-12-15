@@ -1,6 +1,6 @@
 package com.adb.benchmarking;
 
-import com.adb.util.PostgresConnection;
+import db.PostgresConnection;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 

@@ -1,8 +1,7 @@
 package com.adb.benchmarking;
 
 import com.adb.model.Person;
-import com.adb.util.Db4oConnection;
-import com.db4o.Db4o;
+import db.Db4oConnection;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import org.openjdk.jmh.annotations.*;

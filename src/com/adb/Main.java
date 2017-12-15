@@ -6,6 +6,9 @@ import com.adb.model.*;
 import com.adb.util.*;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+import db.Db4oConnection;
+import db.PostgreQueriesBuilder;
+import db.PostgresConnection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
