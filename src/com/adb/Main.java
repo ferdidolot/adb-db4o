@@ -1,4 +1,6 @@
 package com.adb;
+import com.adb.database.predicate.StudentTuitionfeeGreaterThanEightthousand;
+import com.adb.database.query.NativeQuery;
 import com.adb.factory.CourseFactory;
 import com.adb.factory.ProfessorFactory;
 import com.adb.factory.StudentFactory;
@@ -6,9 +8,9 @@ import com.adb.model.*;
 import com.adb.util.*;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
-import com.adb.db.connection.Db4oConnection;
-import com.adb.db.builder.PostgreQueriesBuilder;
-import com.adb.db.connection.PostgresConnection;
+import com.adb.database.connection.Db4oConnection;
+import com.adb.database.builder.PostgreQueriesBuilder;
+import com.adb.database.connection.PostgresConnection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -23,15 +25,24 @@ public class Main {
     public static void main(String args[]) throws Exception{
         db4oConnection = new Db4oConnection();
         db4oConnection.connect();
-        ObjectSet<Course> objectSet = db4oConnection.getObjectContainer().query(Course.class);
-        while(objectSet.hasNext()){
+//        ObjectSet<Course> objectSet = db4oConnection.getObjectContainer().query(Course.class);
+//        while(objectSet.hasNext()){
 //            db4oConnection.getObjectContainer().delete(objectSet.next());
-            System.out.println(objectSet.next());
-        }
+//            System.out.println(objectSet.next());
+//        }
 //        createDb4oSchema();
 
         db4oConnection.commit();
         db4oConnection.close();
+        NativeQuery nativeQuery = new NativeQuery();
+
+        printObjectSet(nativeQuery.execute(new StudentTuitionfeeGreaterThanEightthousand()));
+    }
+
+    public static void printObjectSet(ObjectSet objectSet){
+        while(objectSet.hasNext()){
+            System.out.println(objectSet.next());
+        }
     }
 
     public static void createDb4oSchema() throws Exception {
