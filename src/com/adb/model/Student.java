@@ -12,6 +12,10 @@ public class Student extends Person{
         courses = new ArrayList<>();
     }
 
+    public Student(int id){
+        super(id);
+    }
+
     public Student(int id, String name, List<Course> courses, int yearlyTuitionFee){
         super(id, name);
         this.courses = courses;

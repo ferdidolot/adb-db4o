@@ -1,6 +1,9 @@
 package com.adb;
+import com.adb.database.predicate.StudentId;
 import com.adb.database.predicate.StudentTuitionfeeGreaterThanEightthousand;
+import com.adb.database.query.JdbcQuery;
 import com.adb.database.query.NativeQuery;
+import com.adb.database.query.QBEQuery;
 import com.adb.factory.CourseFactory;
 import com.adb.factory.ProfessorFactory;
 import com.adb.factory.StudentFactory;
@@ -32,11 +35,28 @@ public class Main {
 //        }
 //        createDb4oSchema();
 
-        db4oConnection.commit();
-        db4oConnection.close();
-        NativeQuery nativeQuery = new NativeQuery();
+//        db4oConnection.commit();
+//        db4oConnection.close();
+//        NativeQuery nativeQuery = new NativeQuery(db4oConnection);
+        QBEQuery qbeQuery = new QBEQuery(db4oConnection);
+        Student student = new Student(1);
+        TimeUtil.start();
+        System.out.println("Start native query");
+        for(int i = 0 ; i < 1000 ; i++){
+//            nativeQuery.execute(new StudentId());
+            qbeQuery.queryStudent(student);
+        }
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
 
-        printObjectSet(nativeQuery.execute(new StudentTuitionfeeGreaterThanEightthousand()));
+        TimeUtil.start();
+        System.out.println("Start jdbc query");
+        for(int i = 0 ; i < 1000 ; i++){
+            JdbcQuery.simpleSelect();
+        }
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
+//        printObjectSet(nativeQuery.execute(new StudentTuitionfeeGreaterThanEightthousand()));
     }
 
     public static void printObjectSet(ObjectSet objectSet){
@@ -125,11 +145,11 @@ public class Main {
         db4oConnection.close();
     }
 
-    private static void countJdbc(String table) throws Exception{
+    private static void selectJdbc(String table) throws Exception{
         Connection connection = PostgresConnection.getConnection();
         Statement statement= connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM \""+table+"\"");
-        System.out.println("Record size: " + resultSet.getRow());
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM student where yearlytuitionfee > 8000");
+//        System.out.println("Record size: " + resultSet.getRow());
     }
 
     private  static void deletePersonDb4o(){
@@ -153,11 +173,11 @@ public class Main {
         TimeUtil.stop();
         System.out.println("Counting object of DB4O takes "+ TimeUtil.runTime() + " s");
 
-        String tablename = "Person";
-        TimeUtil.start();
-        countJdbc(tablename);
-        TimeUtil.stop();
-        System.out.println("Counting person of postgresql takes " + TimeUtil.runTime() + " s");
+//        String tablename = "Person";
+//        TimeUtil.start();
+//        countJdbc(tablename);
+//        TimeUtil.stop();
+//        System.out.println("Counting person of postgresql takes " + TimeUtil.runTime() + " s");
     }
 }
 

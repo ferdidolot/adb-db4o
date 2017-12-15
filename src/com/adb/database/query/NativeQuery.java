@@ -7,9 +7,8 @@ import com.db4o.query.Predicate;
 public class NativeQuery {
     private Db4oConnection db4oConnection;
 
-    public NativeQuery(){
-        db4oConnection = new Db4oConnection();
-        db4oConnection.connect();
+    public NativeQuery(Db4oConnection db4oConnection){
+        this.db4oConnection = db4oConnection;
     }
 
     public ObjectSet execute(Predicate predicate){
