@@ -1,23 +1,17 @@
 package com.adb;
 import com.adb.database.predicate.StudentId;
-import com.adb.database.predicate.StudentTuitionfeeGreaterThanEightthousand;
 import com.adb.database.query.JdbcQuery;
 import com.adb.database.query.NativeQuery;
-import com.adb.database.query.QBEQuery;
 import com.adb.factory.CourseFactory;
 import com.adb.factory.ProfessorFactory;
 import com.adb.factory.StudentFactory;
 import com.adb.model.*;
 import com.adb.util.*;
-import com.db4o.ObjectContainer;
+import com.db4o.Db4o;
 import com.db4o.ObjectSet;
 import com.adb.database.connection.Db4oConnection;
 import com.adb.database.builder.PostgreQueriesBuilder;
-import com.adb.database.connection.PostgresConnection;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,41 +20,49 @@ import java.util.Map;
 public class Main {
     private static Db4oConnection db4oConnection;
     public static void main(String args[]) throws Exception{
+        Db4o.configure().activationDepth(1);
         db4oConnection = new Db4oConnection();
         db4oConnection.connect();
-//        ObjectSet<Course> objectSet = db4oConnection.getObjectContainer().query(Course.class);
-//        while(objectSet.hasNext()){
-//            db4oConnection.getObjectContainer().delete(objectSet.next());
-//            System.out.println(objectSet.next());
-//        }
-//        createDb4oSchema();
 
-//        db4oConnection.commit();
-//        db4oConnection.close();
-//        NativeQuery nativeQuery = new NativeQuery(db4oConnection);
-        QBEQuery qbeQuery = new QBEQuery(db4oConnection);
+//        createDb4oSchema();
+        NativeQuery nativeQuery = new NativeQuery(db4oConnection);
+//        QBEQuery qbeQuery = new QBEQuery(db4oConnection);
         Student student = new Student(1);
         TimeUtil.start();
         System.out.println("Start native query");
-        for(int i = 0 ; i < 1000 ; i++){
-//            nativeQuery.execute(new StudentId());
-            qbeQuery.queryStudent(student);
+        for(int i = 0 ; i < 30 ; i++){
+            ObjectSet<Student> objectSet = nativeQuery.execute(new StudentId(1));
+            db4oConnection.getObjectContainer().activate(student, 3);
+            student = objectSet.next();
         }
+        System.out.println(student.getCourses().get(0));
+
         TimeUtil.stop();
         System.out.println(TimeUtil.runTime());
 
         TimeUtil.start();
         System.out.println("Start jdbc query");
-        for(int i = 0 ; i < 1000 ; i++){
-            JdbcQuery.simpleSelect();
+        for(int i = 0 ; i < 30 ; i++){
+            JdbcQuery.simpleJoin();
         }
         TimeUtil.stop();
         System.out.println(TimeUtil.runTime());
-//        printObjectSet(nativeQuery.execute(new StudentTuitionfeeGreaterThanEightthousand()));
+
+        db4oConnection.commit();
+        db4oConnection.close();
+//        db4oConnection.defrag();
     }
 
     public static void printObjectSet(ObjectSet objectSet){
         while(objectSet.hasNext()){
+            System.out.println(objectSet.next());
+        }
+    }
+
+    public static void clearDb4o(){
+        ObjectSet objectSet = db4oConnection.getObjectContainer().query().execute();
+        while(objectSet.hasNext()){
+            db4oConnection.getObjectContainer().delete(objectSet.next());
             System.out.println(objectSet.next());
         }
     }
@@ -128,56 +130,5 @@ public class Main {
         System.out.println(res);
     }
 
-    public static void insertDummyPerson(String dbfilename, int N){
-        ObjectContainer db = db4oConnection.getObjectContainer();
-        for(int i = 0 ; i < N ; i++){
-            db.store(new Person((i+1), "dolsky"));
-        }
-        db4oConnection.commit();
-        db4oConnection.close();
-    }
-
-    private static void countPersonDb4o(){
-        ObjectContainer db = db4oConnection.getObjectContainer();
-        ObjectSet<Person> objectSet = db.query(Person.class);
-        System.out.println("Object size: "+objectSet.size());
-        db4oConnection.commit();
-        db4oConnection.close();
-    }
-
-    private static void selectJdbc(String table) throws Exception{
-        Connection connection = PostgresConnection.getConnection();
-        Statement statement= connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM student where yearlytuitionfee > 8000");
-//        System.out.println("Record size: " + resultSet.getRow());
-    }
-
-    private  static void deletePersonDb4o(){
-        ObjectContainer db = db4oConnection.getObjectContainer();
-        ObjectSet<Person> objectSet = db.query(Person.class);
-        for (Person person: objectSet) {
-            db.delete(person);
-        }
-        db4oConnection.commit();
-        db4oConnection.close();
-    }
-
-    public static void testTimer() throws Exception{
-        TimeUtil.start();
-        countPersonDb4o();
-        TimeUtil.stop();
-        System.out.println("Counting object of DB4O takes "+ TimeUtil.runTime() + " s");
-
-        TimeUtil.start();
-        countPersonDb4o();
-        TimeUtil.stop();
-        System.out.println("Counting object of DB4O takes "+ TimeUtil.runTime() + " s");
-
-//        String tablename = "Person";
-//        TimeUtil.start();
-//        countJdbc(tablename);
-//        TimeUtil.stop();
-//        System.out.println("Counting person of postgresql takes " + TimeUtil.runTime() + " s");
-    }
 }
 

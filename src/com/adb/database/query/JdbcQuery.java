@@ -18,4 +18,8 @@ public class JdbcQuery {
     public static ResultSet simpleSelect() throws SQLException{
         return connection.createStatement().executeQuery("SELECT * FROM student where studentid = 1");
     }
+
+    public static ResultSet simpleJoin() throws SQLException{
+        return connection.createStatement().executeQuery("select * from student a inner join coursetaken b on a.studentid = b.studentid ");
+    }
 }

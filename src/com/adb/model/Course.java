@@ -59,6 +59,6 @@ public class Course {
     }
 
     public String toString(){
-        return courseId +" " + title + " "  + professor +" " + students.toString();
+        return courseId +" " + title ;
     }
 }
