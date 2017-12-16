@@ -1,5 +1,6 @@
 package com.adb.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Course {
@@ -9,6 +10,10 @@ public class Course {
     private List<Student> students;
 
     public Course(){
+        this.courseId = 0;
+        this.title = "";
+        this.professor = null;
+        this.students = new ArrayList<>();
     }
 
     public Course(int courseId, String title, Professor professor, List<Student> students){
