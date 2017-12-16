@@ -2,6 +2,7 @@ package com.adb;
 import com.adb.database.predicate.StudentId;
 import com.adb.database.query.JdbcQuery;
 import com.adb.database.query.NativeQuery;
+import com.adb.database.query.SODAQuery;
 import com.adb.factory.CourseFactory;
 import com.adb.factory.ProfessorFactory;
 import com.adb.factory.StudentFactory;
@@ -25,13 +26,14 @@ public class Main {
         db4oConnection.connect();
 
 //        createDb4oSchema();
-        NativeQuery nativeQuery = new NativeQuery(db4oConnection);
+//        NativeQuery nativeQuery = new NativeQuery(db4oConnection);
 //        QBEQuery qbeQuery = new QBEQuery(db4oConnection);
+        SODAQuery sodaQuery = new SODAQuery(db4oConnection);
         Student student = new Student(1);
         TimeUtil.start();
         System.out.println("Start native query");
         for(int i = 0 ; i < 30 ; i++){
-            ObjectSet<Student> objectSet = nativeQuery.execute(new StudentId(1));
+            ObjectSet<Student> objectSet = sodaQuery.queryStudent();
             db4oConnection.getObjectContainer().activate(student, 3);
             student = objectSet.next();
         }
