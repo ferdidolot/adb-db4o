@@ -10,6 +10,7 @@ public class Student extends Person{
     public Student(){
         super();
         courses = new ArrayList<>();
+        yearlyTuitionFee = 0;
     }
 
     public Student(int id){

@@ -10,6 +10,7 @@ public class Professor extends Person {
     public Professor(){
         super();
         this.courses = new ArrayList<>();
+        this.monthlySalary = 0;
     }
 
     public Professor(int id, String name, List<Course> courses, int monthlySalary){
