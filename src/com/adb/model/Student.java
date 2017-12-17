@@ -48,6 +48,6 @@ public class Student extends Person{
     }
 
     public String toString(){
-        return getId()+","+getName()+" "+getYearlyTuitionFee();
+        return getId()+", "+getName()+", "+getYearlyTuitionFee();
     }
 }

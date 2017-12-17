@@ -1,7 +1,6 @@
 package com.adb.database.query;
 
 import com.adb.database.connection.Db4oConnection;
-import com.adb.database.predicate.StudentId;
 import com.adb.model.Student;
 import com.db4o.ObjectSet;
 

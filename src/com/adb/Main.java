@@ -1,14 +1,13 @@
 package com.adb;
-import com.adb.database.predicate.StudentId;
-import com.adb.database.query.JdbcQuery;
+import com.adb.database.predicate.StudentIdPredicate;
 import com.adb.database.query.NativeQuery;
-import com.adb.database.query.SODAQuery;
 import com.adb.factory.CourseFactory;
 import com.adb.factory.ProfessorFactory;
 import com.adb.factory.StudentFactory;
 import com.adb.model.*;
 import com.adb.util.*;
 import com.db4o.Db4o;
+import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.adb.database.connection.Db4oConnection;
 import com.adb.database.builder.PostgreQueriesBuilder;
@@ -25,33 +24,44 @@ public class Main {
         db4oConnection = new Db4oConnection();
         db4oConnection.connect();
 
+        NativeQuery nativeQuery = new NativeQuery(db4oConnection);
+        ObjectSet<Student> objectSet = nativeQuery.execute(new StudentIdPredicate(4));
+        printObjectSet(objectSet);
+        db4oConnection.close();
+
+//        QBEQuery qbeQuery = new QBEQuery(db4oConnection);
+//        Student student = new Student(1); // create student object with id = 1
+//        ObjectSet<Student> objectSet = qbeQuery.queryStudent(student);
+//        printObjectSet(objectSet);
 //        createDb4oSchema();
 //        NativeQuery nativeQuery = new NativeQuery(db4oConnection);
-//        QBEQuery qbeQuery = new QBEQuery(db4oConnection);
-        SODAQuery sodaQuery = new SODAQuery(db4oConnection);
-        Student student = new Student(1);
-        TimeUtil.start();
-        System.out.println("Start native query");
-        for(int i = 0 ; i < 30 ; i++){
-            ObjectSet<Student> objectSet = sodaQuery.queryStudent();
-            db4oConnection.getObjectContainer().activate(student, 3);
-            student = objectSet.next();
-        }
-        System.out.println(student.getCourses().get(0));
-
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
-
-        TimeUtil.start();
-        System.out.println("Start jdbc query");
-        for(int i = 0 ; i < 30 ; i++){
-            JdbcQuery.simpleJoin();
-        }
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
-
-        db4oConnection.commit();
-        db4oConnection.close();
+//        SODAQuery sodaQuery = new SODAQuery(db4oConnection);
+//        Student student = new Student(1);
+//        TimeUtil.start();
+//        System.out.println("Start native query");
+//        for(int i = 0 ; i < 30 ; i++){
+//            ObjectSet<Student> objectSet = sodaQuery.queryStudent();
+//            db4oConnection.getObjectContainer().activate(student, 3);
+//            student = objectSet.next();
+//        }
+//        System.out.println(student.getCourses().get(0));
+//
+//        TimeUtil.stop();
+//        System.out.println(TimeUtil.runTime());
+//
+//        TimeUtil.start();
+//        System.out.println("Start jdbc query");
+//        for(int i = 0 ; i < 30 ; i++){
+//            JdbcQuery.simpleJoin();
+//        }
+//        TimeUtil.stop();
+//        System.out.println(TimeUtil.runTime());
+//        storeSimplePerson();
+//        updateSimplePerson();
+//        deleteSimplePerson();
+//        selectSimpleObject(Person.class);
+//        db4oConnection.commit();
+//        db4oConnection.close();
 //        db4oConnection.defrag();
     }
 
@@ -68,6 +78,43 @@ public class Main {
             System.out.println(objectSet.next());
         }
     }
+
+    public static void storeSimplePerson(){
+        Person person = new Person(1, "Batman Robin");
+        ObjectContainer container = Db4o.openFile("db/simpleobject");
+        container.store(person);
+        container.commit();
+        container.close();
+    }
+
+    public static void selectSimpleObject(Class c){
+        ObjectContainer container = Db4o.openFile("db/simpleobject");
+        ObjectSet objectSet = container.query(c);
+        while(objectSet.hasNext()){
+            System.out.println(objectSet.next());
+        }
+        container.close();
+    }
+
+    public static void updateSimplePerson(){
+        ObjectContainer container = Db4o.openFile("db/simpleobject");
+        ObjectSet<Person> objectSet = container.query(Person.class);
+        Person p = objectSet.next();
+        p.setName("The Dark Knight");
+        container.store(p);
+        container.commit();
+        container.close();
+    }
+
+public static void deleteSimplePerson(){
+    ObjectContainer container = Db4o.openFile("db/simpleobject");
+    ObjectSet<Person> objectSet = container.query(Person.class);
+    while(objectSet.hasNext()){
+        container.delete(objectSet.next());
+    }
+    container.commit();
+    container.close();
+}
 
     public static void createDb4oSchema() throws Exception {
         InputUtil inputUtil = new InputUtil();
