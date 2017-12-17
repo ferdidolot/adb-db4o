@@ -6,24 +6,27 @@ import java.util.List;
 public class Student extends Person{
     private List<Course> courses;
     private int yearlyTuitionFee;
+    private Person guardian;
 
     public Student(){
         super();
         courses = new ArrayList<>();
         yearlyTuitionFee = 0;
+        guardian = null;
     }
 
     public Student(int id){
         super(id);
     }
 
-    public Student(int id, String name, List<Course> courses, int yearlyTuitionFee){
+    public Student(int id, String name, List<Course> courses, int yearlyTuitionFee, Person guardian){
         super(id, name);
         this.courses = courses;
         for(Course course: courses){
             course.addStudent(this);
         }
         this.yearlyTuitionFee = yearlyTuitionFee;
+        this.guardian = guardian;
     }
 
     public List<Course> getCourses() {
@@ -48,6 +51,6 @@ public class Student extends Person{
     }
 
     public String toString(){
-        return getId()+", "+getName()+", "+getYearlyTuitionFee();
+        return getId()+", "+getName()+", "+getYearlyTuitionFee()+", "+guardian.getName();
     }
 }

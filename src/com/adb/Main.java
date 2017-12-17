@@ -27,13 +27,15 @@ public class Main {
         NativeQuery nativeQuery = new NativeQuery(db4oConnection);
         ObjectSet<Student> objectSet = nativeQuery.execute(new StudentIdPredicate(4));
         printObjectSet(objectSet);
+//        clearDb4o();
+//        createDb4oSchema();
+        db4oConnection.commit();
         db4oConnection.close();
 
 //        QBEQuery qbeQuery = new QBEQuery(db4oConnection);
 //        Student student = new Student(1); // create student object with id = 1
 //        ObjectSet<Student> objectSet = qbeQuery.queryStudent(student);
 //        printObjectSet(objectSet);
-//        createDb4oSchema();
 //        NativeQuery nativeQuery = new NativeQuery(db4oConnection);
 //        SODAQuery sodaQuery = new SODAQuery(db4oConnection);
 //        Student student = new Student(1);
@@ -56,10 +58,7 @@ public class Main {
 //        }
 //        TimeUtil.stop();
 //        System.out.println(TimeUtil.runTime());
-//        storeSimplePerson();
-//        updateSimplePerson();
-//        deleteSimplePerson();
-//        selectSimpleObject(Person.class);
+
 //        db4oConnection.commit();
 //        db4oConnection.close();
 //        db4oConnection.defrag();
@@ -75,7 +74,6 @@ public class Main {
         ObjectSet objectSet = db4oConnection.getObjectContainer().query().execute();
         while(objectSet.hasNext()){
             db4oConnection.getObjectContainer().delete(objectSet.next());
-            System.out.println(objectSet.next());
         }
     }
 
