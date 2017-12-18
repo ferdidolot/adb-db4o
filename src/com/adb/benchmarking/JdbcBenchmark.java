@@ -1,33 +1,20 @@
 package com.adb.benchmarking;
 
-import com.adb.database.connection.PostgresConnection;
-import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.infra.Blackhole;
+import com.adb.database.query.JdbcQueryExecutor;
+import java.sql.SQLException;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.concurrent.TimeUnit;
-
-@State(Scope.Benchmark)
-@BenchmarkMode(Mode.Throughput)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class JdbcBenchmark {
 
-    @Param({"Person"})
-    private static String table;
-
-    @Benchmark
-    public static ResultSet runPostgreQueries(Blackhole bh) throws Exception{
-        ResultSet resultSet = runTest(table);
-        return resultSet;
+    public static double benchmarkJdbcComplexJoin(int iterations) throws SQLException {
+        double res = JdbcQueryExecutor.executeJdbcComplexJoin();
+        double sum = 0;
+        System.out.println("Warming up: " + res);
+        for(int i = 1 ; i <= iterations ; i++){
+            res = JdbcQueryExecutor.executeJdbcComplexJoin();
+            sum += res;
+            System.out.print("Iteration "+ i +": " + res);
+            System.out.println();
+        }
+        return sum/iterations;
     }
-
-    private static ResultSet runTest(String table) throws Exception{
-        Connection connection = PostgresConnection.getConnection();
-        Statement statement= connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM \""+table+"\"");
-        return resultSet;
-    }
-
 }

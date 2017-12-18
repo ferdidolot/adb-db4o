@@ -18,6 +18,7 @@ import com.db4o.ObjectSet;
 import com.adb.database.connection.Db4oConnection;
 import com.adb.database.builder.PostgreQueriesBuilder;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -55,58 +56,15 @@ public class Main {
         return TimeUtil.runTime();
     }
 
-    public static void benchmarkJdbcComplexJoin(int N) throws SQLException{
-        double res = executeJdbcComplexJoin();
-        System.out.println("Warming up: " + res);
-//        List<Double> ans = new ArrayList<>();
-        for(int i = 1 ; i <= N ; i++){
-            res = executeJdbcComplexJoin();
-            System.out.print("Iteration "+ i +": " + res);
-            System.out.println();
-//            ans.add(res);
-
-
-        }
-    }
-
-    public static void benchmarkDb4oComplexJoin(int N) {
-        double res = executeDb4oComplexJoin();
-        System.out.println("Warming up: " + res);
-//        List<Double> ans = new ArrayList<>();
-        for(int i = 1 ; i <= N ; i++){
-            res = executeDb4oComplexJoin();
-            System.out.print("Iteration "+ i +": " + res);
-            System.out.println();
-//            ans.add(res);
-
-
-        }
-    }
-
-    public static double executeDb4oComplexJoin(){
-        TimeUtil.start();
-        for(int i = 0 ; i < 5; i++)
-        client.query(Student.class);
-        TimeUtil.stop();
-        return TimeUtil.runTime();
-    }
-
-    public static double executeJdbcComplexJoin() throws SQLException{
-        TimeUtil.start();
-        for(int i = 0 ; i < 5 ;i++)
-        JdbcQuery.complexJoin();
-        TimeUtil.stop();
-        return TimeUtil.runTime();
-    }
-
     private static Db4oConnection db4oConnection;
     private static ObjectContainer client;
     public static void main(String args[]) throws Exception{
-        Db4o.configure().activationDepth(4);
-        Db4oServerConnection server = new Db4oServerConnection();
-        server.run();
+//        Db4o.configure().activationDepth(4);
 
-        client = server.getClient("user1", "password");
+//        Db4oServerConnection server = new Db4oServerConnection("dbfile",getGrantedUsers());
+//        server.run();
+
+//        client = server.getClient("user1", "password");
 
 //        db4oConnection = new Db4oConnection();
 //        db4oConnection.connect();
@@ -114,13 +72,13 @@ public class Main {
 //        createDb4oSchema();
 
 
-        System.out.println("Start jdbc query");
-        benchmarkJdbcComplexJoin(5);
+//        System.out.println("Start jdbc query");
+//        benchmarkJdbcComplexJoin(5);
 
-        System.out.println("Start Db4o query");
-        benchmarkDb4oComplexJoin(5);
+//        System.out.println("Start Db4o query");
+//        benchmarkDb4oComplexJoin(5);
 
-        client.close();
+//        client.close();
 //        db4oConnection.commit();
 //        db4oConnection.close();
 
@@ -255,58 +213,7 @@ public static void deleteSimplePerson(){
     container.close();
 }
 
-    public static void createDb4oSchema() throws Exception {
-        InputUtil inputUtil = new InputUtil();
-        System.out.println("Reading student input");
-        TimeUtil.start();
-        List<List<String>> students = inputUtil.getCollectionString("student10000.in");
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
 
-        System.out.println("Reading professor input");
-        TimeUtil.start();
-        List<List<String>> professors = inputUtil.getCollectionString("professor100.in");
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
-
-        System.out.println("Reading course input");
-        TimeUtil.start();
-        List<List<String>> courses = inputUtil.getCollectionString("course100.in");
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
-
-        System.out.println("Reading course taken input");
-        TimeUtil.start();
-        List<List<String>> courseTaken = inputUtil.getCollectionString("coursetaken_10000_100.in");
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
-
-        System.out.println("Creating student objects");
-        TimeUtil.start();
-        Map<Integer, Student> studentMap = StudentFactory.produce(students);
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
-
-        System.out.println("Creating professor objects");
-        TimeUtil.start();
-        Map<Integer, Professor> professorMap = ProfessorFactory.produce(professors);
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
-
-        System.out.println("Creating course objects");
-        TimeUtil.start();
-        List<Course> courseList = CourseFactory.produce(courses, courseTaken, professorMap,studentMap);
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
-
-        System.out.println("Inserting objects to db4o");
-        TimeUtil.start();
-        for(Course course: courseList){
-            db4oConnection.getObjectContainer().store(course);
-        }
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
-    }
 
     public static void testQueryBuilder(){
         List<MetaDTO> metaDTOS = new ArrayList<MetaDTO>();
@@ -316,6 +223,15 @@ public static void deleteSimplePerson(){
         metaDTOS.add(new MetaDTO("id", "1", "Integer"));
         String res = PostgreQueriesBuilder.select("Student", name, metaDTOS);
         System.out.println(res);
+    }
+
+
+
+    public static List<User> grantedUsers(){
+        List<User> users = new ArrayList<>();
+        users.add(new User("user1", "password"));
+        users.add(new User("user2", "password"));
+        return users;
     }
 
 }

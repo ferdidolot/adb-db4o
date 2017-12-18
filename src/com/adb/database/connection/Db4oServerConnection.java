@@ -1,18 +1,34 @@
 package com.adb.database.connection;
 
+import com.adb.database.config.Db4oConfiguration;
+import com.adb.model.User;
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectServer;
 
+
+import java.util.List;
+
 public class Db4oServerConnection implements Runnable{
+    private String dbfilename;
+    private String username, password;
+    private List<User> grantedUsers;
     public ObjectServer server;
+
+
+    public Db4oServerConnection(String dbfilename){
+        this.dbfilename = dbfilename;
+        this.grantedUsers = Db4oConfiguration.getGrantedUsers();
+    }
 
     @Override
     public void run() {
         // Create server
-        server = Db4o.openServer("db/dbfile", 8732);
-        server.grantAccess("user1", "password");
-        server.grantAccess("user2", "password");
+        Db4o.configure().activationDepth(4);
+        server = Db4o.openServer("db/" + dbfilename, 8732);
+        for(User user: grantedUsers) {
+            server.grantAccess(user.getUsername(), user.getPassword());
+        }
     }
 
     public ObjectContainer getClient(String username, String password){

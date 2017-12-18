@@ -1,5 +1,6 @@
 package com.adb.benchmarking;
 
+import com.adb.database.query.Db4oQueryExecutor;
 import com.adb.model.Person;
 import com.adb.database.connection.Db4oConnection;
 import com.db4o.ObjectContainer;
@@ -9,26 +10,23 @@ import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.concurrent.TimeUnit;
 
-@State(Scope.Benchmark)
-@BenchmarkMode(Mode.Throughput)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class Db4oBenchmark {
-    static ObjectContainer objectContainer;
-    @Param({"Person"})
-    private static String dbfilename;
+    private Db4oQueryExecutor db4oQueryExecutor;
 
-    @Benchmark
-    public static ObjectSet runDb4oQueries(Blackhole bh) throws Exception{
-        ObjectSet objectSet = runTest(dbfilename);
-        return objectSet;
+    public Db4oBenchmark(ObjectContainer client){
+        db4oQueryExecutor = new Db4oQueryExecutor(client);
     }
 
-    private static ObjectSet runTest(String dbfilename) throws Exception {
-        ObjectContainer db = new Db4oConnection().getObjectContainer();
-        ObjectSet objectSet = db.query(Person.class);
-//        db.close();
-        return objectSet;
+    public double benchmarkDb4oComplexJoin(int iterations) {
+        double sum = 0;
+        double res = db4oQueryExecutor.executeDb4oComplexJoin();
+        System.out.println("Warming up: " + res);
+        for(int i = 1 ; i <= iterations ; i++){
+            res = db4oQueryExecutor.executeDb4oComplexJoin();
+            sum += res;
+            System.out.print("Iteration "+ i +": " + res);
+            System.out.println();
+        }
+        return sum/iterations;
     }
-
-
 }
