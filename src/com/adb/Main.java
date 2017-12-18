@@ -1,6 +1,8 @@
 package com.adb;
 import com.adb.database.predicate.StudentIdPredicate;
+import com.adb.database.query.JdbcQuery;
 import com.adb.database.query.NativeQuery;
+import com.adb.database.query.QBEQuery;
 import com.adb.database.query.SODAQuery;
 import com.adb.exception.NegativeAmountException;
 import com.adb.factory.CourseFactory;
@@ -31,13 +33,65 @@ class RunDb4oServer implements Runnable{
     }
 }
 
+
+
 public class Main {
+
+    public static double testSodaQuery(SODAQuery sodaQuery, int n){
+        TimeUtil.start();
+        for(int i = 0 ; i < n ; i++){
+            ObjectSet objectSet = sodaQuery.queryStudentId(1);
+        }
+        TimeUtil.stop();
+        return TimeUtil.runTime();
+    }
+
+    public static double testNativeQuery(NativeQuery nativeQuery, int n){
+        TimeUtil.start();
+        for(int i = 0 ; i < n ; i++){
+            ObjectSet objectSet = nativeQuery.execute(new StudentIdPredicate(1));
+        }
+        TimeUtil.stop();
+        return TimeUtil.runTime();
+    }
+
+    public static double testNativeQuery(QBEQuery qbeQuery, Student student, int n){
+        TimeUtil.start();
+        for(int i = 0 ; i < n ; i++){
+            ObjectSet objectSet = qbeQuery.queryStudent(student);
+        }
+        TimeUtil.stop();
+        return TimeUtil.runTime();
+    }
+
     private static Db4oConnection db4oConnection;
     public static void main(String args[]) throws Exception{
         Db4o.configure().activationDepth(3);
 
         db4oConnection = new Db4oConnection();
         db4oConnection.connect();
+
+        NativeQuery nativeQuery = new NativeQuery(db4oConnection);
+        QBEQuery qbeQuery = new QBEQuery(db4oConnection);
+        SODAQuery sodaQuery = new SODAQuery(db4oConnection);
+
+        TimeUtil.start();
+        System.out.println("Start db4o query");
+        ObjectSet<Student> objectSet = null;
+        for(int i = 0 ; i < 30000 ; i++){
+            objectSet = db4oConnection.getObjectContainer().query(Student.class);
+        }
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
+
+
+        TimeUtil.start();
+        System.out.println("Start jdbc query");
+        for(int i = 0 ; i < 30000 ; i++){
+            JdbcQuery.simpleJoin();
+        }
+        TimeUtil.stop();
+        System.out.println(TimeUtil.runTime());
 
 //        Student student1 = new Student();
 //        try {
