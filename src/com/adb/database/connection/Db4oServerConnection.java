@@ -25,10 +25,14 @@ public class Db4oServerConnection implements Runnable{
     public void run() {
         // Create server
         Db4o.configure().activationDepth(4);
-        server = Db4o.openServer("db/" + dbfilename, 8732);
+        server = Db4o.openServer(Db4oConfiguration.db4oRootPath + dbfilename, 8732);
         for(User user: grantedUsers) {
             server.grantAccess(user.getUsername(), user.getPassword());
         }
+    }
+
+    public void stop(){
+        server.close();
     }
 
     public ObjectContainer getClient(String username, String password){

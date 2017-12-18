@@ -29,6 +29,7 @@ CREATE TABLE public.student
     studentid integer NOT NULL,
     name character varying(50) COLLATE pg_catalog."default",
     yearlytuitionfee integer,
+    guardian character varying(50) COLLATE pg_catalog."default"
     CONSTRAINT "Student_pkey" PRIMARY KEY (studentid)
 )
 WITH (

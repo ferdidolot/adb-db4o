@@ -10,6 +10,8 @@ import com.adb.util.InputUtil;
 import com.adb.util.TimeUtil;
 import com.db4o.ObjectContainer;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +21,7 @@ public class Db4oDatabaseBuilder {
             this.client = client;
     }
 
-    public void createDb4oSchema(int studentNum, int professorNum, int courseNum) throws Exception {
+    public void createDb4oSchema(int studentNum, int professorNum, int courseNum) throws IOException {
         InputUtil inputUtil = new InputUtil();
         System.out.println("Reading student input");
         TimeUtil.start();
@@ -29,7 +31,7 @@ public class Db4oDatabaseBuilder {
 
         System.out.println("Reading professor input");
         TimeUtil.start();
-        List<List<String>> professors = inputUtil.getCollectionString("professor1"+ professorNum +".in");
+        List<List<String>> professors = inputUtil.getCollectionString("professor"+ professorNum +".in");
         TimeUtil.stop();
         System.out.println(TimeUtil.runTime());
 
