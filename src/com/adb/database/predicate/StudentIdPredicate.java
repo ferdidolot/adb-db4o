@@ -10,6 +10,6 @@ public class StudentIdPredicate extends Predicate<Student>{
         this.id = id;
     }
     public boolean match(Student student){
-        return student.getId() < id;
+        return student.getId() == id;
     }
 }

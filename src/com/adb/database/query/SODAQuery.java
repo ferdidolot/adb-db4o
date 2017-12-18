@@ -14,9 +14,9 @@ public class SODAQuery {
         this.query = db4oConnection.getObjectContainer().query();
     }
 
-    public ObjectSet queryStudent(){
+    public ObjectSet queryStudentId(int id){
         query.constrain(Student.class);
-        query.descend("id").constrain(1);
+        query.descend("id").constrain(id).equal();
         return query.execute();
     }
 }

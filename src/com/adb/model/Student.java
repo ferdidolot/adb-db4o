@@ -1,5 +1,7 @@
 package com.adb.model;
 
+import com.adb.exception.NegativeAmountException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +48,8 @@ public class Student extends Person{
         return yearlyTuitionFee;
     }
 
-    public void setYearlyTuitionFee(int yearlyTuitionFee) {
+    public void setYearlyTuitionFee(int yearlyTuitionFee) throws NegativeAmountException {
+        if(yearlyTuitionFee < 0) throw new NegativeAmountException();
         this.yearlyTuitionFee = yearlyTuitionFee;
     }
 

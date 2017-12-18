@@ -1,6 +1,8 @@
 package com.adb;
 import com.adb.database.predicate.StudentIdPredicate;
 import com.adb.database.query.NativeQuery;
+import com.adb.database.query.SODAQuery;
+import com.adb.exception.NegativeAmountException;
 import com.adb.factory.CourseFactory;
 import com.adb.factory.ProfessorFactory;
 import com.adb.factory.StudentFactory;
@@ -8,6 +10,7 @@ import com.adb.model.*;
 import com.adb.util.*;
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
+import com.db4o.ObjectServer;
 import com.db4o.ObjectSet;
 import com.adb.database.connection.Db4oConnection;
 import com.adb.database.builder.PostgreQueriesBuilder;
@@ -16,21 +19,73 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+class RunDb4oServer implements Runnable{
+    public ObjectServer server;
+
+    @Override
+    public void run() {
+        // Create server
+        server = Db4o.openServer("db/dbfile", 8732);
+        server.grantAccess("user1", "password");
+        server.grantAccess("user2", "password");
+    }
+}
 
 public class Main {
     private static Db4oConnection db4oConnection;
     public static void main(String args[]) throws Exception{
-        Db4o.configure().activationDepth(1);
+        Db4o.configure().activationDepth(3);
+
         db4oConnection = new Db4oConnection();
         db4oConnection.connect();
 
-        NativeQuery nativeQuery = new NativeQuery(db4oConnection);
-        ObjectSet<Student> objectSet = nativeQuery.execute(new StudentIdPredicate(4));
-        printObjectSet(objectSet);
+//        Student student1 = new Student();
+//        try {
+//            System.out.println("Trying to change yearly tuition fee");
+//            System.out.println("--");
+//            student1 = db4oConnection.getObjectContainer()
+//                    .query(new StudentIdPredicate(1)).next();
+//            student1.setYearlyTuitionFee(-1000);
+//        }
+//        catch (NegativeAmountException e){
+//            e.printStackTrace();
+//            db4oConnection.getObjectContainer().rollback();
+//        }
+//        finally {
+//            db4oConnection.commit();
+//        }
+//        System.out.println("--");
+//        System.out.println("Value after trying perform the transaction");
+//        System.out.println(student1);
+//
+//        db4oConnection.close();
+
+//        RunDb4oServer db4oServer = new RunDb4oServer();
+//        db4oServer.run();
+//
+//        // Create clients
+//        ObjectContainer client1 = Db4o.openClient("interstellar", 8732, "user1", "password");
+//        ObjectContainer client2 = Db4o.openClient("interstellar", 8732, "user2", "password");
+//
+//
+//        Student student1 = client1.query(new StudentIdPredicate(1)).next();
+//        Student student2 = client2.query(new StudentIdPredicate(2)).next();
+//        System.out.println(student1);
+//        System.out.println(student2);
+//
+//        client1.close();
+//        client2.close();
+//        db4oConnection = new Db4oConnection();
+//        db4oConnection.connect();
+//
+//        SODAQuery sodaQuery = new SODAQuery(db4oConnection);
+//        Student student = (Student) sodaQuery.queryStudentId(1).next();
+//        db4oConnection.getObjectContainer().activate(student, 2);
+//        db4oConnection.commit();
+//        db4oConnection.close();
+
 //        clearDb4o();
 //        createDb4oSchema();
-        db4oConnection.commit();
-        db4oConnection.close();
 
 //        QBEQuery qbeQuery = new QBEQuery(db4oConnection);
 //        Student student = new Student(1); // create student object with id = 1
