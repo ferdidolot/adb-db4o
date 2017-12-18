@@ -28,16 +28,16 @@ public class JdbcQuery {
     }
 
     public static ResultSet simpleJoin() throws SQLException{
-        String query = "SELECT * FROM student a" +
+        String query = "SELECT * FROM student a " +
                 "INNER JOIN coursetaken b ON a.studentid = b.studentid";
         return execute(query);
     }
 
     public static ResultSet complexJoin() throws SQLException{
-        String query = "SELECT * FROM student a" +
-                "INNER JOIN coursetaken b ON a.studentid = b.studentid" +
-                "INNER JOIN course c ON b.courseid = c.courseid" +
-                "INNER JOIN professor d ON d.profid = c.profid";
+        String query = "SELECT * FROM student a " +
+                "INNER JOIN coursetaken b ON a.studentid = b.studentid " +
+                "INNER JOIN course c ON b.courseid = c.courseid " +
+                "INNER JOIN professor d ON d.profid = c.profid ";
         return execute(query);
     }
 

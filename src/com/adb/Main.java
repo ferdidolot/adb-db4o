@@ -1,4 +1,5 @@
 package com.adb;
+import com.adb.database.connection.Db4oServerConnection;
 import com.adb.database.predicate.StudentIdPredicate;
 import com.adb.database.query.JdbcQuery;
 import com.adb.database.query.NativeQuery;
@@ -17,21 +18,11 @@ import com.db4o.ObjectSet;
 import com.adb.database.connection.Db4oConnection;
 import com.adb.database.builder.PostgreQueriesBuilder;
 
+import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-class RunDb4oServer implements Runnable{
-    public ObjectServer server;
-
-    @Override
-    public void run() {
-        // Create server
-        server = Db4o.openServer("db/dbfile", 8732);
-        server.grantAccess("user1", "password");
-        server.grantAccess("user2", "password");
-    }
-}
 
 
 
@@ -64,34 +55,75 @@ public class Main {
         return TimeUtil.runTime();
     }
 
+    public static void benchmarkJdbcComplexJoin(int N) throws SQLException{
+        double res = executeJdbcComplexJoin();
+        System.out.println("Warming up: " + res);
+//        List<Double> ans = new ArrayList<>();
+        for(int i = 1 ; i <= N ; i++){
+            res = executeJdbcComplexJoin();
+            System.out.print("Iteration "+ i +": " + res);
+            System.out.println();
+//            ans.add(res);
+
+
+        }
+    }
+
+    public static void benchmarkDb4oComplexJoin(int N) {
+        double res = executeDb4oComplexJoin();
+        System.out.println("Warming up: " + res);
+//        List<Double> ans = new ArrayList<>();
+        for(int i = 1 ; i <= N ; i++){
+            res = executeDb4oComplexJoin();
+            System.out.print("Iteration "+ i +": " + res);
+            System.out.println();
+//            ans.add(res);
+
+
+        }
+    }
+
+    public static double executeDb4oComplexJoin(){
+        TimeUtil.start();
+        for(int i = 0 ; i < 5; i++)
+        client.query(Student.class);
+        TimeUtil.stop();
+        return TimeUtil.runTime();
+    }
+
+    public static double executeJdbcComplexJoin() throws SQLException{
+        TimeUtil.start();
+        for(int i = 0 ; i < 5 ;i++)
+        JdbcQuery.complexJoin();
+        TimeUtil.stop();
+        return TimeUtil.runTime();
+    }
+
     private static Db4oConnection db4oConnection;
+    private static ObjectContainer client;
     public static void main(String args[]) throws Exception{
-        Db4o.configure().activationDepth(3);
+        Db4o.configure().activationDepth(4);
+        Db4oServerConnection server = new Db4oServerConnection();
+        server.run();
 
-        db4oConnection = new Db4oConnection();
-        db4oConnection.connect();
+        client = server.getClient("user1", "password");
 
-        NativeQuery nativeQuery = new NativeQuery(db4oConnection);
-        QBEQuery qbeQuery = new QBEQuery(db4oConnection);
-        SODAQuery sodaQuery = new SODAQuery(db4oConnection);
-
-        TimeUtil.start();
-        System.out.println("Start db4o query");
-        ObjectSet<Student> objectSet = null;
-        for(int i = 0 ; i < 30000 ; i++){
-            objectSet = db4oConnection.getObjectContainer().query(Student.class);
-        }
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
+//        db4oConnection = new Db4oConnection();
+//        db4oConnection.connect();
+//        clearDb4o();
+//        createDb4oSchema();
 
 
-        TimeUtil.start();
         System.out.println("Start jdbc query");
-        for(int i = 0 ; i < 30000 ; i++){
-            JdbcQuery.simpleJoin();
-        }
-        TimeUtil.stop();
-        System.out.println(TimeUtil.runTime());
+        benchmarkJdbcComplexJoin(5);
+
+        System.out.println("Start Db4o query");
+        benchmarkDb4oComplexJoin(5);
+
+        client.close();
+//        db4oConnection.commit();
+//        db4oConnection.close();
+
 
 //        Student student1 = new Student();
 //        try {
@@ -227,7 +259,7 @@ public static void deleteSimplePerson(){
         InputUtil inputUtil = new InputUtil();
         System.out.println("Reading student input");
         TimeUtil.start();
-        List<List<String>> students = inputUtil.getCollectionString("student1000.in");
+        List<List<String>> students = inputUtil.getCollectionString("student10000.in");
         TimeUtil.stop();
         System.out.println(TimeUtil.runTime());
 
@@ -245,7 +277,7 @@ public static void deleteSimplePerson(){
 
         System.out.println("Reading course taken input");
         TimeUtil.start();
-        List<List<String>> courseTaken = inputUtil.getCollectionString("coursetaken_1000_100.in");
+        List<List<String>> courseTaken = inputUtil.getCollectionString("coursetaken_10000_100.in");
         TimeUtil.stop();
         System.out.println(TimeUtil.runTime());
 
