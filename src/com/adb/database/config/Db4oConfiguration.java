@@ -10,9 +10,6 @@ public class Db4oConfiguration {
     public static final String username = "user1";
     public static final String password = "password";
     public static final String db4oRootPath = "db/";
-    static {
-        Db4o.configure().activationDepth(4);
-    }
 
 
     public static List<User> getGrantedUsers(){

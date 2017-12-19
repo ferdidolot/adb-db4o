@@ -59,50 +59,34 @@ public class Main {
     private static Db4oConnection db4oConnection;
     private static ObjectContainer client;
     public static void main(String args[]) throws Exception{
-//        Db4o.configure().activationDepth(4);
+        Db4o.configure().activationDepth(2);
 
-//        Db4oServerConnection server = new Db4oServerConnection("dbfile",getGrantedUsers());
-//        server.run();
-
-//        client = server.getClient("user1", "password");
-
-//        db4oConnection = new Db4oConnection();
-//        db4oConnection.connect();
+        db4oConnection = new Db4oConnection();
+        db4oConnection.connect();
 //        clearDb4o();
 //        createDb4oSchema();
 
+        Student student = new Student();
+        try {
+            System.out.println("Trying to change yearly tuition fee");
+            System.out.println("--");
+            student = db4oConnection.getObjectContainer()
+                    .query(new StudentIdPredicate(1)).next();
+            db4oConnection.getObjectContainer().activate(student, 4);
+            student.setYearlyTuitionFee(-1000);
+        }
+        catch (NegativeAmountException e){
+            e.printStackTrace();
+            db4oConnection.getObjectContainer().rollback();
+        }
+        finally {
+            db4oConnection.commit();
+        }
+        System.out.println("--");
+        System.out.println("Value after trying perform the transaction");
+        System.out.println(student);
 
-//        System.out.println("Start jdbc query");
-//        benchmarkJdbcComplexJoin(5);
-
-//        System.out.println("Start Db4o query");
-//        benchmarkDb4oComplexJoin(5);
-
-//        client.close();
-//        db4oConnection.commit();
-//        db4oConnection.close();
-
-
-//        Student student1 = new Student();
-//        try {
-//            System.out.println("Trying to change yearly tuition fee");
-//            System.out.println("--");
-//            student1 = db4oConnection.getObjectContainer()
-//                    .query(new StudentIdPredicate(1)).next();
-//            student1.setYearlyTuitionFee(-1000);
-//        }
-//        catch (NegativeAmountException e){
-//            e.printStackTrace();
-//            db4oConnection.getObjectContainer().rollback();
-//        }
-//        finally {
-//            db4oConnection.commit();
-//        }
-//        System.out.println("--");
-//        System.out.println("Value after trying perform the transaction");
-//        System.out.println(student1);
-//
-//        db4oConnection.close();
+        db4oConnection.close();
 
 //        RunDb4oServer db4oServer = new RunDb4oServer();
 //        db4oServer.run();

@@ -53,6 +53,14 @@ public class Student extends Person{
         this.yearlyTuitionFee = yearlyTuitionFee;
     }
 
+    public Person getGuardian() {
+        return guardian;
+    }
+
+    public void setGuardian(Person guardian) {
+        this.guardian = guardian;
+    }
+
     public String toString(){
         return getId()+", "+getName()+", "+getYearlyTuitionFee()+", "+guardian.getName();
     }

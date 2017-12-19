@@ -17,6 +17,58 @@ public class Db4oBenchmark {
         db4oQueryExecutor = new Db4oQueryExecutor(client);
     }
 
+    public double benchmarkDb4oSimpleSelect(int iterations) {
+        double sum = 0;
+        double res = db4oQueryExecutor.executeDb4oSimpleSelect();
+        System.out.println("Warming up: " + res);
+        for(int i = 1 ; i <= iterations ; i++){
+            res = db4oQueryExecutor.executeDb4oSimpleSelect();
+            sum += res;
+            System.out.print("Iteration "+ i +": " + res);
+            System.out.println();
+        }
+        return sum/iterations;
+    }
+
+    public double benchmarkDb4oComplexSelect(int iterations) {
+        double sum = 0;
+        double res = db4oQueryExecutor.executeDb4oComplexSelect();
+        System.out.println("Warming up: " + res);
+        for(int i = 1 ; i <= iterations ; i++){
+            res = db4oQueryExecutor.executeDb4oComplexSelect();
+            sum += res;
+            System.out.print("Iteration "+ i +": " + res);
+            System.out.println();
+        }
+        return sum/iterations;
+    }
+
+    public double benchmarkDb4oGroupAndAggregate(int iterations) {
+        double sum = 0;
+        double res = db4oQueryExecutor.executeDb4oGroupAndAggregate();
+        System.out.println("Warming up: " + res);
+        for(int i = 1 ; i <= iterations ; i++){
+            res = db4oQueryExecutor.executeDb4oGroupAndAggregate();
+            sum += res;
+            System.out.print("Iteration "+ i +": " + res);
+            System.out.println();
+        }
+        return sum/iterations;
+    }
+
+    public double benchmarkDb4oSimpleJoin(int iterations) {
+        double sum = 0;
+        double res = db4oQueryExecutor.executeDb4oSimpleJoin();
+        System.out.println("Warming up: " + res);
+        for(int i = 1 ; i <= iterations ; i++){
+            res = db4oQueryExecutor.executeDb4oSimpleJoin();
+            sum += res;
+            System.out.print("Iteration "+ i +": " + res);
+            System.out.println();
+        }
+        return sum/iterations;
+    }
+
     public double benchmarkDb4oComplexJoin(int iterations) {
         double sum = 0;
         double res = db4oQueryExecutor.executeDb4oComplexJoin();
